@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime Isekai Gacha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --R:#8fbfff;
+  --SR:#b58cff;
+  --SSR:#ffd36a;
+  --USSR:#ff6ad5;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  height:100vh;
+  background:url("assets/bga.gif") center/cover fixed no-repeat;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  color:#fff;
+}
+
+/* ===== BASE UI ===== */
+#ui{
+  backdrop-filter:blur(14px);
+  background:rgba(0,0,0,.55);
+  padding:38px 50px;
+  border-radius:44px;
+  text-align:center;
+  box-shadow:0 0 180px rgba(0,0,0,.85);
+}
+#ui h1{
+  font-family:"Cinzel",serif;
+  letter-spacing:5px;
+}
+#summonBtn{
+  font-family:"Orbitron",sans-serif;
+  padding:18px 46px;
+  font-size:20px;
+  border-radius:50px;
+  border:none;
+  cursor:pointer;
+  background:linear-gradient(45deg,#ff78d8,#7aa2ff);
+  color:#fff;
+  box-shadow:0 0 40px rgba(255,120,220,.6);
+}
+
+/* ===== SUMMON SCREEN ===== */
+#summonScreen{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:
+    radial-gradient(circle at center, rgba(160,120,255,.35), rgba(0,0,0,.96));
+  z-index:10;
+  overflow:hidden;
+}
+
+/* ===== ENERGY FIELD ===== */
+.energy-field{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,.06), transparent 60%);
+  animation:energyPulse .8s ease-out forwards;
+}
+
+@keyframes energyPulse{
+  from{opacity:0;transform:scale(.8)}
+  to{opacity:1;transform:scale(1)}
+}
+
+/* ===== PARTICLES ===== */
+.particle{
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:white;
+  opacity:.8;
+  animation:particle 1.1s ease-out forwards;
+}
+@keyframes particle{
+  from{transform:translate(0,0) scale(1);opacity:1}
+  to{transform:translate(var(--x),var(--y)) scale(0);opacity:0}
+}
+
+/* ===== MAGIC RING ===== */
+.magic-ring{
+  position:absolute;
+  width:440px;
+  height:440px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.18);
+  animation:ringSpin 4.5s linear infinite;
+  box-shadow:0 0 160px rgba(180,120,255,.45);
+}
+
+/* ===== CARD ===== */
+.card{
+  position:relative;
+  display:flex;
+  gap:36px;
+  align-items:center;
+  padding:46px 56px;
+  border-radius:46px;
+  background:linear-gradient(145deg,rgba(30,30,45,.94),rgba(10,10,18,.98));
+  animation:reveal .75s cubic-bezier(.16,1.5,.3,1);
+  box-shadow:0 0 240px rgba(255,255,255,.25);
+  z-index:2;
+}
+
+/* ===== IMAGE ===== */
+.character-frame{
+  width:270px;
+  height:270px;
+  border-radius:50%;
+  overflow:hidden;
+}
+.character-frame img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* ===== RARITY AURA ===== */
+.card.SSR{
+  box-shadow:
+    0 0 120px rgba(255,211,106,.6),
+    0 0 260px rgba(255,211,106,.35);
+}
+.card.USSR{
+  box-shadow:
+    0 0 160px rgba(255,106,213,.9),
+    0 0 360px rgba(255,106,213,.6);
+  animation:revealUltra .9s cubic-bezier(.16,1.5,.3,1);
+}
+
+/* ===== INFO ===== */
+.info h3{
+  font-family:"Cinzel",serif;
+  font-size:32px;
+  margin:0;
+}
+.rarity{
+  margin:14px 0;
+  font-family:"Orbitron",sans-serif;
+  font-size:30px;
+  letter-spacing:4px;
+}
+.R{color:var(--R)}
+.SR{
+  color:var(--SR);
+  text-shadow:0 0 20px var(--SR);
+}
+.SSR{
+  color:var(--SSR);
+  text-shadow:0 0 50px var(--SSR);
+}
+.USSR{
+  color:var(--USSR);
+  font-size:38px;
+  text-shadow:
+    0 0 70px var(--USSR),
+    0 0 140px rgba(255,106,213,.8);
+  animation:pulse 1.2s infinite alternate;
+}
+
+/* ===== ACTION ===== */
+.actions button{
+  margin:10px 6px;
+  padding:12px 22px;
+  border-radius:24px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes reveal{
+  0%{transform:scale(.25) translateY(90px);opacity:0;filter:blur(25px)}
+  60%{transform:scale(1.12);opacity:1;filter:blur(0)}
+  100%{transform:scale(1)}
+}
+@keyframes revealUltra{
+  0%{transform:scale(.15);opacity:0;filter:blur(40px)}
+  60%{transform:scale(1.2);opacity:1}
+  100%{transform:scale(1)}
+}
+@keyframes ringSpin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+@keyframes pulse{
+  from{transform:scale(1)}
+  to{transform:scale(1.08)}
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:640px){
+  .card{flex-direction:column;text-align:center}
+  .character-frame{width:220px;height:220px}
+}
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+  <h1>✦ ISEKAI GACHA ✦</h1>
+  <button id="summonBtn">SUMMON</button>
+</div>
+
+<div id="summonScreen"></div>
+
+<audio src="assets/music.mp3" autoplay loop></audio>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<script>
+let pool={R:[],SR:[],SSR:[],USSR:[]};
+fetch("characters.json").then(r=>r.json()).then(d=>{
+  d.forEach(c=>pool[c.rarity]?.push(c));
+});
+
+function roll(){
+  const r = Math.random() * 100;
+  if(r < 1)  return "USSR"; // Langsung ketahuan ini 1%
+  if(r < 5)  return "SSR";  // Langsung ketahuan ini 4% (5-1)
+  if(r < 20) return "SR";   // Langsung ketahuan ini 15% (20-5)
+  return "R";               // Sisanya
+}
+
+
+const screen=document.getElementById("summonScreen");
+document.getElementById("summonBtn").onclick=summon;
+
+function summon(){
+  screen.style.display="flex";
+  screen.innerHTML='<div class="energy-field"></div><div class="magic-ring"></div>';
+
+  // anticipation micro-delay (natural)
+  setTimeout(()=>{
+    for(let i=0;i<48;i++){
+      const p=document.createElement("div");
+      p.className="particle";
+      p.style.setProperty("--x",(Math.random()*700-350)+"px");
+      p.style.setProperty("--y",(Math.random()*700-350)+"px");
+      p.style.left="50%";
+      p.style.top="50%";
+      screen.appendChild(p);
+    }
+
+    requestAnimationFrame(()=>{
+      const rarity=roll();
+      const c=pool[rarity][Math.floor(Math.random()*pool[rarity].length)];
+
+      const card=document.createElement("div");
+      card.className="card "+rarity;
+      card.innerHTML=`
+        <div class="character-frame"><img src="${c.image}"></div>
+        <div class="info">
+          <h3>${c.name}</h3>
+          <div class="rarity ${rarity}">${rarity}</div>
+          <div class="actions">
+            <button onclick="save()">Save</button>
+            <button onclick="summon()">Gacha Again</button>
+          </div>
+        </div>`;
+      screen.appendChild(card);
+    });
+  },240); // sweet spot delay
+}
+
+
+function save(){
+  const card = document.querySelector(".card");
+  if(!card) return;
+
+  const name = card.querySelector("h3").innerText;
+  const rarity = card.querySelector(".rarity").innerText;
+  const imgSrc = card.querySelector("img").src;
+
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = imgSrc;
+
+  img.onload = () => {
+    const w = 900;
+    const h = 1400;
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+
+    /* ===== BACKGROUND ===== */
+    let bg = ctx.createLinearGradient(0,0,0,h);
+    if(rarity==="R"){ bg.addColorStop(0,"#1b1f2f"); bg.addColorStop(1,"#0b0e18"); }
+    if(rarity==="SR"){ bg.addColorStop(0,"#2a1b3d"); bg.addColorStop(1,"#0e061a"); }
+    if(rarity==="SSR"){ bg.addColorStop(0,"#3a2c10"); bg.addColorStop(1,"#120b02"); }
+    if(rarity==="USSR"){ bg.addColorStop(0,"#2a0a3d"); bg.addColorStop(1,"#050014"); }
+
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,w,h);
+
+    /* ===== FRAME ===== */
+    ctx.lineWidth = rarity==="USSR"?16:rarity==="SSR"?12:rarity==="SR"?8:4;
+    ctx.strokeStyle =
+      rarity==="USSR"?"#ff6ad5":
+      rarity==="SSR"?"#ffd36a":
+      rarity==="SR"?"#b58cff":"#8fbfff";
+    ctx.shadowColor = ctx.strokeStyle;
+    ctx.shadowBlur = rarity==="USSR"?60:rarity==="SSR"?40:20;
+    ctx.strokeRect(30,30,w-60,h-60);
+    ctx.shadowBlur = 0;
+
+    /* ===== CHARACTER ===== */
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(w/2, h/2-120, 330, 0, Math.PI*2);
+    ctx.clip();
+    ctx.drawImage(img, w/2-330, h/2-450, 660, 660);
+    ctx.restore();
+
+    /* ===== SSR SHINE ===== */
+    if(rarity==="SSR"){
+      ctx.save();
+      ctx.globalAlpha = 0.35;
+      ctx.translate(w/2, h/2);
+      ctx.rotate(-Math.PI/6);
+
+      const shine = ctx.createLinearGradient(-w,0,w,0);
+      shine.addColorStop(0,"rgba(255,255,255,0)");
+      shine.addColorStop(0.5,"rgba(255,255,255,.6)");
+      shine.addColorStop(1,"rgba(255,255,255,0)");
+
+      ctx.fillStyle = shine;
+      ctx.fillRect(-w,-h,w*2,h*2);
+      ctx.restore();
+    }
+
+    /* ===== ULTRA EFFECT ===== */
+    if(rarity==="USSR"){
+      ctx.save();
+      ctx.globalAlpha=0.25;
+      ctx.strokeStyle="#ff6ad5";
+      ctx.lineWidth=3;
+      for(let i=0;i<12;i++){
+        ctx.beginPath();
+        ctx.arc(w/2,h/2-120,420-i*18,0,Math.PI*2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    /* ===== NAME AUTO FIT ===== */
+    ctx.textAlign="center";
+    ctx.fillStyle="#fff";
+    ctx.shadowColor="rgba(255,255,255,.6)";
+    ctx.shadowBlur=18;
+
+    let fontSize=64;
+    ctx.font=`bold ${fontSize}px Cinzel`;
+    const maxWidth=w-140;
+    while(ctx.measureText(name).width>maxWidth && fontSize>38){
+      fontSize-=2;
+      ctx.font=`bold ${fontSize}px Cinzel`;
+    }
+    ctx.fillText(name,w/2,h-240);
+
+    /* ===== RARITY TEXT ===== */
+    ctx.font="bold 48px Orbitron";
+    ctx.shadowBlur=40;
+    ctx.fillStyle=ctx.strokeStyle;
+    ctx.shadowColor=ctx.strokeStyle;
+    ctx.fillText(rarity,w/2,h-170);
+
+    /* ===== CARD ID ===== */
+    const cardId=Math.floor(Math.random()*900000)+100000;
+    ctx.font="20px Orbitron";
+    ctx.fillStyle="rgba(255,255,255,.6)";
+    ctx.shadowBlur=0;
+    ctx.textAlign="right";
+    ctx.fillText(`#${cardId}`,w-50,h-50);
+
+    /* ===== DOWNLOAD ===== */
+    const a=document.createElement("a");
+    a.href=canvas.toDataURL("image/png");
+    a.download=`${name}_${rarity}_CARD.png`;
+    a.click();
+  };
+}
+</script>
+
+</body>
+</html>
