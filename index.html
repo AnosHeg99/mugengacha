@@ -30,7 +30,7 @@
 body{
   margin:0;
   height:100vh;
-  background:url("assets/bga.gif") center/cover fixed no-repeat;
+  background:url("assets/bganime.gif") center/cover fixed no-repeat;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -359,7 +359,7 @@ body{
 <div id="summonScreen" class="summon-area"></div>
 
 
-<audio src="assets/On_My_Way.mp3" autoplay loop></audio>
+
 <audio id="sfxStart" src="assets/sfx/summonstart.mp3"></audio>
 <audio id="sfxCharge" src="assets/sfx/gachaopen.mp3" loop></audio>
 <audio id="sfxR" src="assets/sfx/R_sound.mp3"></audio>
@@ -370,6 +370,8 @@ body{
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <script>
+  let bgm;
+
 let pool={R:[],SR:[],SSR:[],USSR:[]};
 fetch("characters.json").then(r=>r.json()).then(d=>{
   d.forEach(c=>pool[c.rarity]?.push(c));
@@ -466,6 +468,16 @@ function stop(id){
 }
 
 function summon(){
+
+  if(!bgm){
+    bgm = new Audio("assets/On_My_Way.mp3");
+    bgm.loop = true;
+    bgm.volume = 0.45;
+    bgm.play().catch(e => {
+      console.log("BGM blocked:", e);
+    });
+  }
+
   screen.style.display="flex";
   screen.innerHTML='<div class="energy-field"></div><div class="magic-ring"></div>';
 
@@ -688,5 +700,4 @@ function updatePityVisual() {
 
 </body>
 </html>
-
 
